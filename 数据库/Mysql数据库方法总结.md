@@ -365,3 +365,69 @@
     合并具有相同一列的两个以上的表的行，结果集中除了包含一个表与另一个表匹配的行还查询到左表和右表不匹配的行
 
     多表查询就是多表合并，通过主键等于外键的方式进行连接，过滤掉无用元素
+    
+### 事务api对应的方法
+    用途：用于批量查询数据
+
+    查询索引的方法
+    查询索引：
+        select index 
+    删除索引删除索引名称：
+        alter table student drop index idx_name11;
+    添加索引
+        alter table student add index name_index（name）；
+        create index idx_name11 on student(name);
+    删除索引的语法：
+        drop index name——index on student
+    执行查询
+        explain select id，name from id，name where name=；
+    查询语句是否使用了索引
+
+    添加索引：
+        alter table product add product name_index（name）；
+    添加组合索引：
+        create index idx_name11 on student(name，age);
+
+    组合索引
+    一个索引名称作用于两个字段
+    如果匹配不上，一般不会进行全盘扫秒，会使用默认索引算法，匹配一致索引
+     
+    注意：对于其他数据库组合索引最左匹配规则可能不会生效
+     
+#### 索引失效问题
+    索引失效演示
+        失效一：模糊查询索引失效
+        失效二： or语句条件里面：没有同时索引会失效，同时使用（前后使用索引）会索引失效
+    失效一：
+        explain select name.id from student
+        where name like '%三';
+            explain select name.id from student
+        where name = '张三';
+    失效二：
+            or失效的情况：
+        explain select name,id from student
+        where name = ’张三‘ or id = 1；
+
+     组合索引
+     如果匹配不上，一般不会进行全盘扫秒，会使用默认索引算法，匹配一致索引
+     show profiles查询语句的执行语句
+     alter table product add product name_index（name）；
+     
+#### 索引有效率问题
+    有索引执行时间会比之前慢
+     
+     方式一：批量执行多条sql语句
+     方式二：执行一条sql语句，批量处理多条数据
+     添加五百万条数据
+
+      索引字段越短查询效率越高
+
+    索引长度：
+    定义索引长度原则：
+        索引的长度的查询接近于表中的总数
+            判定方法
+            select count（id） from product；
+        定义索引的长度：索引具体如何设置长度一般索引长度接近表的长度
+            name的名称相同不计算
+            使用distinct 
+            select count（distinct left（name,10））from product
