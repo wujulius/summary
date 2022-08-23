@@ -42,9 +42,7 @@ function  aj(jsonParam){// var jsonParam = { type:"get",path:服务器路径,par
             var value = xh.responseText;//接收请求参数
             //处理的方式:打印到控制台
             console.log("异步请求响应的数据:  "+ value);
-            
         }
-        
     }
 }
 //2.定义插件:
