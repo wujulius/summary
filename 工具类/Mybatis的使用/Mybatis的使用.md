@@ -41,32 +41,32 @@
       <artifactId>mybatis</artifactId>
       <version>3.5.10</version>
     </dependency>
-    <!--log4j日志依赖-->
+     <!--log4j日志依赖-->
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>1.2.17</version>
+      </dependency>
+      <!--lombok依赖-->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>2.18.0</version>
-    </dependency>
-    <dependency>
-    <!--lombok依赖-->
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.24</version>
     </dependency>
     <!--jsp依赖-->
      <dependency>
-                 <groupId>javax.servlet.jsp</groupId>
-                 <artifactId>javax.servlet.jsp-api</artifactId>
-                 <version>2.3.3</version>
-                    <scope>provided</scope>
-             </dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>javax.servlet.jsp-api</artifactId>
+        <version>2.3.3</version>
+        <scope>provided</scope>
+        </dependency>
       <!--servlet依赖-->
-             <dependency>
-                 <groupId>javax.servlet</groupId>
-                 <artifactId>javax.servlet-api</artifactId>
-                 <version>4.0.1</version>
-                 <scope>provided</scope>
-             </dependency>
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>MybatisProject</finalName>
@@ -141,7 +141,7 @@
 </mapper>
 ~~~~
 ## 步骤四：获取工厂对象的方法
-~~~~javaa
+~~~~java
 package utils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -360,4 +360,5 @@ public interface ResultSetHandler {
 ## 总结：
 
     注意：一个查询更新方法只能调用一次Executor，否则会产生线程争抢问题，
+        在mybatis中#{}是预编译对象占位符，而${}是编译对象占位符
 
