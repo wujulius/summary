@@ -18,6 +18,8 @@
     DataSourceTransactionManager：事务管理对象
     DefaultTransactionDefinition：事务定义对象
     TransactionStatus ：事务状态对象
+## 事务的传播行为
+![七种传播行为](img\事务的传播级别.png)
     
 ### 使用方法：
 ~~~~java
