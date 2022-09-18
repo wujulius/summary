@@ -52,8 +52,6 @@
             transactionManager.rollback(status);
             throw new RuntimeException(e);
         }
-
-
     }
 ~~~~
 
