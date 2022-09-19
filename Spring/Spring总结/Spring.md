@@ -1,6 +1,9 @@
 # spring组成模块
+
 ![spring组成模块](img\spring组成模块.png)
+
 ## spring组成模块
+
     核心容器（SpringCore）
     核心容器提供Spring框架的基本功能。spring以bean的方式组织和管理Java应用的各个组件及其关系，spring使用BeanFactory来产生和管理Bean，是工厂模式的实现，BeanFactory使用控制反转（IoC）模式将应用的配置和依赖性规范与实际的应用程序代码分开
     
@@ -20,7 +23,9 @@
     MVC模块（SpringWebMVC）
     MVC（Model View Controller）
     MVC框架是一个全功能的构建Web应用程序的MVC实现，通过策略接口，MVC框架编程高度可配置的，MVC容纳了大量视图技术，其中包括JSP，POI等，模型由JavaBean来构成，存放于m当中，而视图是一个接口，负责实现模型，控制器表示逻辑代码，由c的事情。spring框架的功能可以用在任何J2EE服务器当中，大多数功能也适用于不受管理的环境，spring的核心要点就是支持不绑定到特定J2EE服务的可重用业务和数据的访问对象，毫无疑问这样的对象可以在不同的J2EE环境，独立应用程序和测试环境之间重用
-# spring使用的设计模式
+
+## spring使用的设计模式
+
    工厂设计模式 : Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。
     代理设计模式 : Spring AOP 功能的实现。
     单例设计模式 : Spring 中的 Bean 默认都是单例的。
