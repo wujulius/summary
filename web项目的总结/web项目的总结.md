@@ -1,29 +1,42 @@
 # web项目的目录结构
 
 ## web普通项目的目录结构
+
 ![web普通项目](img/非mavne目录结构.jpg)
+
 ## webmaven项目的目录结构
+
 ![maven项目](img/maven项目结构.jpg)
+
 ## 三层结构中的目录结构
+
 ![三层结构对应目录](img/对应层中的分级目录结构.jpg)
+
 # web项目的创建
+
 ## 普通项目
+
     步骤一：创建一个普通的javaee项目
     步骤二: 创建一个web目录（在项目栏右键add framework）
     步骤三：在javaee的lib包下添加包（通过file 的project structure实现）
     步骤四：添加tomcat配置（注意部署项目，以及更改访问路径）
     步骤五：在web.xml文件中添加servlet映射或在servlet中添加@webservlet（url路径）
+
 ## maven项目
+
     步骤一：创建一个maven项目
     步骤二：创建一个web目录
     步骤三：在pom.xml里添加packaging标签：添加tomcat插件(注意更改里面的路径)
             添加相应的依赖
     步骤四：在run项里配置tomcat 方法栏里写对应的插件run方法
+    
 ## 数据库和前端连接的步骤:
+
     步骤一：定义一个JDBCUtil类用来获取连接对象
     步骤二：定义一个servlet里面写相应的sql语句
     步骤三：写前端页面，将相应的get或post方法添加到method属性中
 # 项目实战：
+
 ![标准的web项目](img/标准的web项目的三层结构.jpg)
 ![webapp项目](img/webapp项目结构.jpg)
     步骤：
@@ -53,6 +66,7 @@
             导入页面原型（前端提供）
                  将页面放在webapp下面
 ## web三层结构：
+
         web层：（表现层）
             servlet和controller模式对应的技术（获取前端数据）（实现页面请求数据封装到Bean对象）           
         service层：（业务逻辑层）：
@@ -75,6 +89,7 @@
         Student student = new Student();
         3.调用BeanUtils工具类对数据进行封装：
         BeanUtils.populate(student,map);
+    
     使用Spring-jdbc持久层框架进行
         步骤一：
             导入所需的依赖
@@ -100,6 +115,7 @@
     通过标签里的name属性，和javaBean对象的属性值进行对应传值，后端通过getparameterMap()获取对应的请求数据
 
 ### jstl标签库的使用
+
     首先将类依赖导入pom.xml文件
     在jsp文件中添加
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -132,13 +148,18 @@
         <td><input type = "text" style="visibility:hidden" name = "bookid" value="${param.bookid}"></td>
 
     标签之只读属性：readonly="readonly"
+
 ## 跳转和重定向
+
     跳转：
         request.getRequestDispatcher("/student/editCustomer.jsp").forward(request,response);
     重定向：
        response.sendRedirect("/StudentQueryServlet");
+
 ## Servlet中的四个域对象
+
 ## Date类型和String类型数据的转换：
+
 
     //将Date数据类型的日期转换为String类型的数据（浏览器中的数据都是String类型）
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
@@ -147,10 +168,13 @@
         DateConverter converter = new DateConverter();
         converter.setPattern(new String("yyyy-MM-dd"));
         ConvertUtils.register(converter, Date.class);
+
 ## 模块化设计
+
     通过模块设计来减少代码的冗余度，和复杂度
     有几个模块（例如用户）来定义几个对应层的接口
     在接口中写需要调用的方法
             
 ## 注意：
+
     浏览器中的数据都是String类型
