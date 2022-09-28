@@ -1,4 +1,4 @@
-# SpringSecurity
+# SpringMVC中使用SpringSecurity
 
 ## SpringSecurity概述
 
@@ -17,7 +17,7 @@
 
     userdetails的封装通过重写UserDetailsService方法来实现：
     通过传入username，调用相应的mapper层的数据库查询方法，将数据封装到自定义的domain中，
-    
+
     同时通过调用相应的方法将查询出来的角色数据存放到授权list中
     （在配置文件拦截路径放行时判别（或者controller使用@secured（“角色名”）来实现权限控制））
 
