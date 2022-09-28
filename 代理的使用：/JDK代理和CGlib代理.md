@@ -1,4 +1,5 @@
 ## CGlib使用步骤：
+
     步骤0：导入依赖
     步骤一：创建一个需要被代理的类
     步骤二：创建一个类去实现MethodIntercepter接口（）
@@ -14,8 +15,11 @@
                     设置目标类方法拦截器
             步骤四；
                 创建代理对象
+
 ## 代码实现:
+
 ### 依赖导入
+
 ~~~~xml
     <dependency>
           <groupId>cglib</groupId>
@@ -23,7 +27,9 @@
           <version>3.2.0</version>
       </dependency>
 ~~~~
+
 ### 创建一个需要被代理的类
+
 ~~~~java 
 package homework;
 //创建一个
@@ -35,7 +41,9 @@ public class MyHuaWei {
 
 }
 ~~~~
+
 ### 创建一个获取代理对象的类
+
 ~~~~java
 package homework;
 
@@ -73,7 +81,9 @@ public class MyHuaWeiProxy {
     }
 }
 ~~~~
+
 ### 创建一个测试类
+
 ~~~~java
 
 import homework.MyHuaWei;
