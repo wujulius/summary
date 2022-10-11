@@ -53,3 +53,23 @@
       在注解驱动中开启相应的转换器：<mvc:annonation-driven conversion-service：自定义转换器的id>
 
 ## 
+
+
+    熟练使用spring，springboot，springmvc主流开发框架
+    熟悉spring，springboot的设计原理
+    
+
+    熟悉MySQL，熟悉常用的sql语法及原理，具备数据库设计能力，掌握常用的调优方法
+    
+    有微服务的开发经验，对分布式、缓存、消息、搜索等机制有一定的了解
+
+    精通java编程语言，熟练使用linux/unix操作系统，
+
+    熟练使用数据库及中间件
+
+    熟悉MySQL、redis、kafka、mongodb等常见存储的使用
+
+    熟练使用 git 管理项目，有良好的代码习惯
+    熟练使用idea开发工具，以及maven
+
+    熟悉java基础技术体系，基础扎实，熟练掌握常用java技术框架
