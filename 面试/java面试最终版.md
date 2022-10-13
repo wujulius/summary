@@ -103,8 +103,18 @@
     - [乐观锁和悲观锁的概念](#乐观锁和悲观锁的概念)
     - [volatile关键字的作用：](#volatile关键字的作用)
     - [threadloacl原理：](#threadloacl原理)
+    - [threadlocal的作用](#threadlocal的作用)
+    - [threadlocal 公有的方法：](#threadlocal-公有的方法)
+    - [threadlocalmap与weakreference](#threadlocalmap与weakreference)
+    - [threaklocalmap的实现](#threaklocalmap的实现)
+    - [为什么要用 ThreadLocalMap 来保存线程局部对象呢？](#为什么要用-threadlocalmap-来保存线程局部对象呢)
+    - [threadlocal的内存回收](#threadlocal的内存回收)
+    - [threadlocalmap是threadlocal里面的一个静态内部类](#threadlocalmap是threadlocal里面的一个静态内部类)
     - [volatile的场景：](#volatile的场景)
     - [volatile变量和synchronized的区别](#volatile变量和synchronized的区别)
+    - [正确使用volatile变量的条件](#正确使用volatile变量的条件)
+    - [性能考虑](#性能考虑)
+    - [threadlocal什么时候会出现oom的情况](#threadlocal什么时候会出现oom的情况)
   - [jvm](#jvm)
     - [jvm的组成部分](#jvm的组成部分)
     - [源代码的执行流程](#源代码的执行流程)
@@ -175,6 +185,9 @@
     - [gcroots有哪些](#gcroots有哪些)
     - [如何处理循环引用](#如何处理循环引用)
     - [如果想在gc中生存一次如何做](#如果想在gc中生存一次如何做)
+    - [内存溢出和内存泄露的区别](#内存溢出和内存泄露的区别)
+    - [上溢和下溢的区别](#上溢和下溢的区别)
+    - [内存溢出](#内存溢出)
 #  java面试
 ## 基础
 
@@ -778,9 +791,36 @@
 
 ### threadloacl原理：
     threadlocal用来维护本线程的变量，
-    threadlocal是将各线程变量的值存入到map中，存入时以值为map的value以当前threadlocal本身为key
+    threadlocal是将各线程变量的副本存入到map的vlaue中，以当前threadlocal本身为key
     需要用时获取的是线程之前存入的值
     当存入的值为共享变量的值时，获取的也是共享变量的值，存在并发问题
+### threadlocal的作用
+
+    提供线程内的局部变量（维护的变量的副本），这些变量在线程的生命周期内起作用，减少一个线程内多个函数或者组件之间一些公共变量的传递的复杂度
+### threadlocal 公有的方法：
+    get，remove，set，initvalue
+
+### threadlocalmap与weakreference
+    
+    threadloaclmap是一个经过了两层包装的threadlocal对象
+    1.第一层包装是使用了weakreference<threadlocal<?>>将threadlocal对象变成一个弱引用的对象
+    2.第二层包装是定义的类entry来扩展weakreference<threadlocal<?>>
+### threaklocalmap的实现
+
+    使用了一个数组 private entry[] table 来保存键值对实体，初始化大小为16
+### 为什么要用 ThreadLocalMap 来保存线程局部对象呢？
+
+    不管一个线程有多少个局部变量，都使用同一个threadlocalmap保存，entry[] table初始化大小为 16 当容量超过3/2时，进行扩容
+
+### threadlocal的内存回收
+    涉及到两个层面：
+    1.在threadlocal层面
+        当线程死亡时，所有保存的线程局部变量都会被回收
+    2.在threadlocalmap层面
+        当entry{} table占用达到3/2时，就会尝试回收entry对象，清理存活时间长的局部变量
+
+### threadlocalmap是threadlocal里面的一个静态内部类
+
 
 ### volatile的场景：
     1.状态转换
@@ -803,9 +843,50 @@
     volatile变量具有可见性，但是不具备synchronized的原子性
     可以用于线程安全：
     条件是：多个变量或一个变量修改后的值和之前的值之间不存在约束
+### 正确使用volatile变量的条件
 
     变量没有包含在其他变量的不变式中
     变量的写操作不依赖于当前值
+
+### 性能考虑 
+    使用volatile的主要原因是其简易性，使用volatile变量比使用相应的锁简单的多
+    次要原因 吸能，某些情况下，volatile变量同步机制的性能优于锁
+
+    volatile的读操作和非volatile的读操作的开销几乎一样
+    而 volatile的写操作的开销比非volatile的写操作的开销要高的高
+
+    volatile 操作不会像锁一样造成阻塞，能够安全使用volatile的情况下，volatile可以提供一些优于锁的可伸缩性
+
+    如果读操作的次数远超于写操作，与锁相比，volatile变量通常可以减少同步的开销
+
+### threadlocal什么时候会出现oom的情况 
+
+    在没有使用线程池的条件下，正常情况下不会造成内存泄露。如果使用了线程池的话，如果线程池没有销毁线程，那么可能会造成内存泄露
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## jvm
 ### jvm的组成部分
@@ -1225,6 +1306,23 @@
 
     释放掉对象的引用，在finalize（）方法中重新建立引用，该方法只被调用一次，因而存活一次
 
+### 内存溢出和内存泄露的区别
+
+    内存溢出：（out of memory ）是指申请内存时，没有足够的内存空间供其使用
+    内存泄露：（memory leak）是指申请内存时，无法释放已经使用的内存空间
+
+    内存泄露达到一定程度最终也会造成内存溢出的出现
+
+### 上溢和下溢的区别
+
+    上溢：栈满后，还进栈产生空间溢出
+    下溢：栈中没有任何元素，还退栈产生空间溢出
+
+### 内存溢出
+
+    栈内存溢出：
+    堆内存溢出：
+    持久带内存溢出：
 
 
 
