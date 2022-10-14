@@ -97,6 +97,8 @@
     - [excutor的两级调度模型](#excutor的两级调度模型)
     - [executor](#executor)
     - [线程安全和线程不安全的区别](#线程安全和线程不安全的区别)
+    - [线程安全举例说明：](#线程安全举例说明)
+    - [线程安全问题](#线程安全问题)
     - [实现线程安全的方式](#实现线程安全的方式)
       - [互斥同步锁（悲观锁）](#互斥同步锁悲观锁)
       - [非阻塞同步锁（乐观锁）](#非阻塞同步锁乐观锁)
@@ -117,7 +119,7 @@
     - [正确使用volatile变量的条件](#正确使用volatile变量的条件)
     - [性能考虑](#性能考虑)
     - [threadlocal什么时候会出现oom的情况](#threadlocal什么时候会出现oom的情况)
-    - [threadlocalma](#threadlocalma)
+    - [threadlocalmap](#threadlocalmap)
     - [synchronized、volatile区别](#synchronizedvolatile区别)
     - [保证线程安全的三大特性](#保证线程安全的三大特性)
     - [指令重排](#指令重排)
@@ -126,6 +128,17 @@
     - [jmm处理过程](#jmm处理过程)
     - [提高高并发量服务器的思路](#提高高并发量服务器的思路)
     - [大型网站是怎样解决多用户高并发访问的](#大型网站是怎样解决多用户高并发访问的)
+    - [负载均衡](#负载均衡)
+  - [nignx注意事项](#nignx注意事项)
+    - [nignx负载配置默认采用](#nignx负载配置默认采用)
+    - [blockingqueue的三个添加方法和三个删除方法](#blockingqueue的三个添加方法和三个删除方法)
+    - [常见blockingqueue实现队列](#常见blockingqueue实现队列)
+    - [arrayblockingqueue和linkedblockingqueue](#arrayblockingqueue和linkedblockingqueue)
+    - [linux之间进行通信的方式](#linux之间进行通信的方式)
+    - [linux内核态和用户态](#linux内核态和用户态)
+    - [并发编程的类，接口和方法](#并发编程的类接口和方法)
+    - [hashmap是否线程安全](#hashmap是否线程安全)
+    - [concurrenthashmap](#concurrenthashmap)
   - [jvm](#jvm)
     - [jvm的组成部分](#jvm的组成部分)
     - [源代码的执行流程](#源代码的执行流程)
@@ -740,7 +753,13 @@
 
     线程安全：线程执行过程中不会产生线程共享资源的冲突
     线程不安全：多个线程操作数据可能造成
+### 线程安全举例说明：
+    线程安全是指当你在多个线程运行相同的代码时，运行结果和单线程运行结果一致，其他变量的值和预期是一样的，这就是线程安全
 
+### 线程安全问题
+
+    线程安全问题主要由全局变量和静态变量引起
+    存在竞争的线程不安全，不存在竞争的线程安全
 ### 实现线程安全的方式 
 
     1.互斥同步
@@ -885,7 +904,7 @@
     在没有使用线程池的条件下，正常情况下不会造成内存泄露。如果使用了线程池的话，如果线程池没有销毁线程，那么可能会造成内存泄露
 
 
-### threadlocalma
+### threadlocalmap
     通过源代码可以看到每个线程都可以独立修改属于自己的副本而不会互相影响，从而隔离了线程和线程.
     避免了线程访问实例变量发生安全问题. 同时我们也能得出下面的结论：
     （1）ThreadLocal只是操作Thread中的ThreadLocalMap对象的集合；
@@ -976,6 +995,89 @@
 
     分布式以减少单个任务的执行时间来提高效率
     集群以提高单位时间内执行任务的数量来提高效率
+
+    集群主要分为：高可用集群，负载均衡集群，科学计算集群
+
+    分布式将不同的业务分布到不同的服务器上
+    集群将相同的业务部署到多个服务器上
+
+    分布式每个节点都可以用做集群
+
+### 负载均衡
+
+    负载均衡就是将负载平摊到不同的操作单元上，用来进行性能提升以及处理单点故障和增强扩展性
+## nignx注意事项
+
+### nignx负载配置默认采用
+
+    采用轮询机制，按时间顺序逐一分配到后端服务器上，若有一个后端服务器down掉，会自动剔除
+    存在服务器session共享问题
+
+### blockingqueue的三个添加方法和三个删除方法
+
+    该接口继承自queue接口
+    三个添加方法：
+        offer 添加成功返回true 添加失败返回false
+        add 添加成功返回true 若队列已满则会报illegalstatexception
+        put 添加元素到队列里，若队列已满会处于阻塞状态直到队列不满
+
+    三个删除方法
+        
+        remove 删除队列中对应的元素 成功 返回true 错误返回false
+        poll 删除队列的第一个元素，若队列为空返回null 否则返回当前值
+        take    删除队列的第一个元素，若队列为空，则会处于阻塞状态直到队列不为空
+
+### 常见blockingqueue实现队列
+
+    arrayblockingqueue linkedblockingqueue linkedblockingdeque proprityblockingqueue
+
+### arrayblockingqueue和linkedblockingqueue
+    arrayblockingqueue 只有一个锁，添加和删除元素只允许一个线程执行，不能并行执行
+    linkedblockingqueue 两个锁 放锁和拿锁 ，添加和删除元素允许并行执行，添加数
+据和删除数据的时候只能有1个线程各自执行。
+
+### linux之间进行通信的方式
+                无法介于用户态和内核态的原因
+    套接字           软硬中断中无法无阻塞方式接收数据
+    管道                局限于父子进程之间的通信
+    信号量           无法介于内核态和用户态使用
+    内存共享            依赖于信号量信号量不可用
+    消息队列         软硬中断中无法无阻塞方式接收数据
+
+
+### linux内核态和用户态
+
+    内核态：运行的代码，cpu可以执行任何指令
+    用户态:运行的代码受到cpu的严格审查，不能直接访问内核数据和程序
+
+### 并发编程的类，接口和方法
+    1.线程池
+    2.reetrantlock
+    3.volatile
+    4.atomics
+    5.cylicbarrier
+    6.countdownlatch
+    7.semaphore
+    8.exchanger
+    9.future和futuretask
+
+### hashmap是否线程安全
+
+    在进行多线程并发操作时，进行get操作可能会造成死循环，cpu使用率可能接近到100%
+
+    解决策略：使用hashtable或者使用collections.synchronizedmap（hashmap）
+            都是给一个线程加锁，一个线程在进行操作时其他线程处于阻塞状态
+
+### concurrenthashmap
+
+    concurrenthashmap在jdk1.7使用分段锁机制来实现
+
+    底层采用数组+链表构成
+    包括两个核心类 segment 和hashentry两个核心类
+
+    segment继承自reentrantlock用来充当锁对象，用来维护多个散列对象映射的若干个桶，桶里存放着若干个hashentry组成的链表，
+
+    
 
 
 
