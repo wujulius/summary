@@ -133,6 +133,7 @@
     - [threadlocalmap](#threadlocalmap)
     - [synchronized、volatile区别](#synchronizedvolatile区别)
     - [保证线程安全的三大特性](#保证线程安全的三大特性)
+    - [synchronized和volatile有序性的区别](#synchronized和volatile有序性的区别)
     - [指令重排](#指令重排)
     - [java中的锁的粒度](#java中的锁的粒度)
     - [jmm的内存模型定义](#jmm的内存模型定义)
@@ -1031,7 +1032,13 @@
 
     有序性：在本线程内观察，所有的操作是有序的，在其他线程内观察，所有的操作是无序的
 
+### synchronized和volatile有序性的区别
 
+    volatile和synchronized的有序是不同的:
+
+    volatile关键字禁止JVM编译器已及处理器对其进行重排序,
+
+    synchronized保证顺序性是串行化的结果，但同步块里的语句是会发生指令从排。
 
 ### 指令重排
 
